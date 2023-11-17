@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { StyledForm, Error, StyledInput, AddContactButton, UserIcon, UserPhone } from "./ContactForm.styled"
 
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 
 const ContactSchema = Yup.object().shape({
     name: Yup.string()
@@ -26,7 +26,7 @@ const ContactSchema = Yup.object().shape({
 
 export const ContactForm = () => {
     const dispatch = useDispatch();
-    const contacts = useSelector(getContacts);
+    const contacts = useSelector(selectContacts);
     const handleSubmit = (values, actions) => {
         const nameExist = contacts.some(
             contact => contact.name.toLowerCase() === values.name.toLowerCase()
@@ -41,8 +41,11 @@ export const ContactForm = () => {
     return (
         <Formik
             initialValues={{ name: '', number: '' }}
-            onSubmit={handleSubmit}
+            onSubmit={(values, actions) => {
+                handleSubmit(values, actions);
+            }}
             validationSchema={ContactSchema}>
+            
             <StyledForm>
                 <label>
                     Name
